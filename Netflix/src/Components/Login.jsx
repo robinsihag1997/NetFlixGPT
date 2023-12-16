@@ -1,6 +1,11 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { validateForm } from "../utils/validateForm";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 export default function Login() {
   const [isSignInForm, setIsSignInForm] = useState(true);
@@ -16,10 +21,9 @@ export default function Login() {
 
   const toggleSignInForm = () => {
     setIsSignInForm(!isSignInForm);
-    if (!isSignInForm) {
-      setEmailValue("");
-      setPasswordValue("");
-    }
+
+    setEmailValue("");
+    setPasswordValue("");
     setValidationMessage(null);
   };
   const submit = () => {
@@ -34,11 +38,13 @@ export default function Login() {
       if (validationResponse === "Email is not valid") {
         setValidationMessage(validationResponse);
         setEmailValue("");
+        return;
       }
       if (validationResponse === "Password is not valid") {
         // console.log(validationResponse);
         setValidationMessage(validationResponse);
         setPasswordValue("");
+        return;
       }
       // if (validationResponse === "UserName is not valid") {
       //   setValidationMessage(validationResponse);
@@ -46,11 +52,49 @@ export default function Login() {
       // }
       // setEmailValue("");
       // setPasswordValue("");
+
+      // login and signup code
+      if (validationResponse === null) {
+        if (!isSignInForm) {
+          // console.log(emailref.current.value, passwordref.current.value);
+          // sign up logic
+          createUserWithEmailAndPassword(
+            auth,
+            emailref.current.value,
+            passwordref.current.value
+          )
+            .then((userCredential) => {
+              const user = userCredential.user;
+              // console.log(user);
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              setValidationMessage(errorMessage);
+            });
+        } else {
+          // Login Logic
+          signInWithEmailAndPassword(
+            auth,
+            emailref.current.value,
+            passwordref.current.value
+          )
+            .then((userCredential) => {
+              const user = userCredential.user;
+              console.log(user);
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              setValidationMessage(errorMessage);
+            });
+        }
+      }
     }
     setuserNameValue("");
     setPasswordValue("");
     setEmailValue("");
-    alert("success");
+    setValidationMessage(null);
   };
 
   const seePasswordfn = () => {

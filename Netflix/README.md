@@ -9,6 +9,7 @@ Login form
 signup form
 -form validation
 -useRef hook
+firebase setup
 
 # Features
 
