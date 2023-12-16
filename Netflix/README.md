@@ -4,8 +4,11 @@ Task done
 -vite react app
 -configured tailwindcss
 -Header
+-Routing of app
 Login form
 signup form
+-form validation
+-useRef hook
 
 # Features
 
