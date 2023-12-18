@@ -4,8 +4,12 @@ import { validateForm } from "../utils/validateForm";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../Redux/Slice";
 
 export default function Login() {
   const [isSignInForm, setIsSignInForm] = useState(true);
@@ -14,10 +18,13 @@ export default function Login() {
   const [passwordVAlue, setPasswordValue] = useState("");
   const [userNameVAlue, setuserNameValue] = useState("");
   const [seePassword, setSeePassword] = useState(false);
+  // const [errorField, setErrorField] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   let emailref = useRef(null);
   let passwordref = useRef(null);
-  // let userName = useRef(null);
+  let userName = useRef(null);
 
   const toggleSignInForm = () => {
     setIsSignInForm(!isSignInForm);
@@ -28,6 +35,14 @@ export default function Login() {
   };
   const submit = () => {
     // validate form data
+
+    //adding feature is pending
+    // let errorFieldChecking =
+    //   emailVAlue || userNameVAlue || passwordVAlue === ""
+    //     ? "Please fill all fields"
+    //     : null;
+    // console.log(errorFieldChecking);
+    // setErrorField(errorFieldChecking);
 
     if (emailVAlue || passwordVAlue) {
       const validationResponse = validateForm(
@@ -61,11 +76,34 @@ export default function Login() {
           createUserWithEmailAndPassword(
             auth,
             emailref.current.value,
-            passwordref.current.value
+            passwordref.current.value,
+            userName.current.value
           )
             .then((userCredential) => {
               const user = userCredential.user;
-              // console.log(user);
+              updateProfile(user, {
+                displayName: userName.current.value,
+              })
+                .then(() => {
+                  // Profile updated!
+                  const { uid, email, displayName } = auth.currentUser;
+                  // ...
+                  dispatch(
+                    addUser({
+                      uid: uid,
+                      email: email,
+                      displayName: displayName,
+                    })
+                  );
+                  navigate("/browse");
+
+                  // ...
+                })
+                .catch((error) => {
+                  // An error occurred
+                  setValidationMessage(error.message);
+                });
+              console.log(user);
             })
             .catch((error) => {
               const errorCode = error.code;
@@ -82,6 +120,7 @@ export default function Login() {
             .then((userCredential) => {
               const user = userCredential.user;
               console.log(user);
+              navigate("/browse");
             })
             .catch((error) => {
               const errorCode = error.code;
@@ -124,10 +163,9 @@ export default function Login() {
             id="FullName"
             className="p-4 my-4 w-full bg-gray-800"
             placeholder="Enter Full Name"
-            // ref={userName}
+            ref={userName}
             value={userNameVAlue}
             onChange={(e) => setuserNameValue(e.target.value)}
-            required
           />
         )}
         <input
@@ -141,7 +179,6 @@ export default function Login() {
             setEmailValue(e.target.value);
           }}
           value={emailVAlue}
-          required
         />
         <div>
           <input
@@ -155,7 +192,6 @@ export default function Login() {
               setPasswordValue(e.target.value);
             }}
             value={passwordVAlue}
-            required
           />
           <p onClick={seePasswordfn} className=" text-white cursor-pointer">
             SeePassword
@@ -165,6 +201,8 @@ export default function Login() {
         <h1 className=" text-lg font-bold py-2  text-red-600">
           {validationMessage}
         </h1>
+        {/* <h1 className=" text-lg font-bold py-2  text-red-600">{errorField}</h1> */}
+
         <button
           className="py-4 my-6 bg-red-700 w-full rounded-lg"
           onClick={submit}

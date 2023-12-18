@@ -10,6 +10,9 @@ signup form
 -form validation
 -useRef hook
 firebase setup
+create singup user account
+implement sign in user api using firebase
+created redux store with userslice
 
 # Features
 
