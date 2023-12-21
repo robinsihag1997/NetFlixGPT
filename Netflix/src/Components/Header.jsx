@@ -1,36 +1,54 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { auth } from "../utils/firebase";
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser, removeUser } from "../Redux/Slice";
+import { netflixLogo, signOutLogo } from "../utils/constant";
 
 export default function Header() {
   const navigate = useNavigate();
   let user = useSelector((store) => store.user);
+  let dispatch = useDispatch();
 
   const handleSignout = () => {
     signOut(auth)
       .then(() => {
         // Sign-out successful.
-        navigate("/");
       })
       .catch((error) => {
         // An error happened.
         navigate("/error");
       });
   };
+
+  useEffect(() => {
+    const unSubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/auth.user
+        const { uid, email, displayName } = user;
+        // ...
+        dispatch(addUser({ uid: uid, email: email, displayName: displayName }));
+        navigate("/browse");
+      } else {
+        // User is signed out
+        // ...
+        dispatch(removeUser(null));
+        navigate("/");
+      }
+    });
+    // called when component is  unmount
+    return () => unSubscribe();
+  }, []);
   return (
     <div className="absolute w-screen px-8 py-2 bg-gradient-to-b from-black z-10 flex justify-between">
-      <img
-        className="w-44"
-        src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
-        alt="netflix logo"
-      />
+      <img className="w-44" src={netflixLogo} alt="netflix logo" />
       {user && (
         <div className="flex p-2">
           <img
-            className=" w-12 h-12  "
-            src="https://i.pinimg.com/474x/5b/50/e7/5b50e75d07c726d36f397f6359098f58.jpg"
+            className=" w-12 h-12  mx-2 rounded-md "
+            src={signOutLogo}
             alt="usericon"
           />
           <button onClick={handleSignout} className=" font-bold text-white">

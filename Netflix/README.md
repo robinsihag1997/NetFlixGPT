@@ -13,6 +13,11 @@ firebase setup
 create singup user account
 implement sign in user api using firebase
 created redux store with userslice
+sign in /sign out done
+bux fix : if the user is not loggin in redirect to login vice versa
+
+- fetching tmbd api for movies
+- got api from tmbd for now playing movies
 
 # Features
 
