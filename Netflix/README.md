@@ -18,6 +18,7 @@ bux fix : if the user is not loggin in redirect to login vice versa
 
 - fetching tmbd api for movies
 - got api from tmbd for now playing movies
+- video title and video Background is done
 
 # Features
 
