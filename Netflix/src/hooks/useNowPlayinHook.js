@@ -10,6 +10,7 @@ const useNowPlayinMovies = () => {
     const apiRes = await fetch(URL, API_OPTIONS);
     const data = await apiRes.json();
     // console.log(data.results);
+
     dispatch(addNowPlayingMovies(data.results));
   };
 
