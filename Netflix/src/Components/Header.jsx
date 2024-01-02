@@ -4,7 +4,12 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "../Redux/Slice";
-import { netflixLogo, signOutLogo } from "../utils/constant";
+import {
+  SUPPORTED_LANGUAGES,
+  netflixLogo,
+  signOutLogo,
+} from "../utils/constant";
+import { toggelGptSearchView } from "../Redux/gptSlice";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -20,6 +25,12 @@ export default function Header() {
         // An error happened.
         navigate("/error");
       });
+  };
+
+  // gpt search function
+
+  const handleGptSearch = () => {
+    dispatch(toggelGptSearchView());
   };
 
   useEffect(() => {
@@ -46,8 +57,22 @@ export default function Header() {
       <img className="w-44" src={netflixLogo} alt="netflix logo" />
       {user && (
         <div className="flex p-2">
+          <select className=" rounded-lg border-collapse p-2 m-2 bg-gray-900 text-white ">
+            {SUPPORTED_LANGUAGES.length > 0 &&
+              SUPPORTED_LANGUAGES.map((lang, index) => (
+                <option key={lang.identifier} value={lang.identifier}>
+                  {lang.language}
+                </option>
+              ))}
+          </select>
+          <button
+            className="py-2 px-4 mx-3 my-2 bg-purple-800 text-white rounded-lg"
+            onClick={handleGptSearch}
+          >
+            GPT Search
+          </button>
           <img
-            className=" w-12 h-12  mx-2 rounded-md "
+            className=" w-12 h-12  mx-4 my-1 rounded-md "
             src={signOutLogo}
             alt="usericon"
           />

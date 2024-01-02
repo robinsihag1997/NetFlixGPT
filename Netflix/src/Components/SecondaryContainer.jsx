@@ -12,9 +12,8 @@ export default function SecondaryContainer() {
         <div className="-mt-52 relative pl-3 z-20  ">
           <MovieList title={"Now Playing"} movies={movies.nowPlayingMovies} />
           <MovieList title={"PopularMovies"} movies={movies.popularMovies} />
-          {/* <MovieList title={"Popular"} movies={movies} />
-        <MovieList title={"Upcoming Movies"} movies={movies} />
-        <MovieList title={"Horror"} movies={movies} /> */}
+          <MovieList title={"New Movies"} movies={movies.nowPlayingMovies} />
+          <MovieList title={"Trending"} movies={movies.popularMovies} />
         </div>
       </div>
     )
