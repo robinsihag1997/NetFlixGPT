@@ -37,3 +37,4 @@ bux fix : if the user is not loggin in redirect to login vice versa
   -NetFlixGPT
   -Search Bar
   -Movie Suggestions
+  -multilanguage feature done
