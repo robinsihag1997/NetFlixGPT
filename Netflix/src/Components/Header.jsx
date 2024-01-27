@@ -9,7 +9,7 @@ import {
   netflixLogo,
   signOutLogo,
 } from "../utils/constant";
-import { toggelGptSearchView } from "../Redux/gptSlice";
+import { addGptMovieResults, toggelGptSearchView } from "../Redux/gptSlice";
 import { changeLanguage } from "../Redux/configSlice";
 
 export default function Header() {
@@ -34,6 +34,7 @@ export default function Header() {
 
   const handleGptSearch = () => {
     dispatch(toggelGptSearchView());
+    dispatch(addGptMovieResults(null));
   };
 
   const handleLanguageChange = (e) => {

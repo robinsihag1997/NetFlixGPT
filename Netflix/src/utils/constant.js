@@ -6,7 +6,9 @@ export const API_OPTIONS = {
   method: "GET",
   headers: {
     accept: "application/json",
-    Authorization: "Bearer " + process.env.REACT_APP_TMBD_KEY,
+    // Authorization: "Bearer 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",
+    Authorization:
+      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMThiOGVhYjNkMDBmNTNmNmEyOWM0ZDIwYWY1ZDAxZSIsInN1YiI6IjY1ODQ1YjcxY2E4MzU0NDEwM2Q3YzBjNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.m4a5lOUBtUCbwA0_qYJzISujWkEdD2oARb-uDU0_EOU",
   },
 };
 export const URL = "https://api.themoviedb.org/3/movie/now_playing?page=1";

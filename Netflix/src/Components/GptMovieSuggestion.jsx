@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import store from "../Redux/Store";
-import MovieList from "./MovieList";
+
 import MovieCard from "./MovieCard";
 
 export default function GptMovieSuggestion() {
