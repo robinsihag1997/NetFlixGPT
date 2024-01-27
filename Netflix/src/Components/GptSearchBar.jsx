@@ -1,14 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import lang from "../utils/LanguageConstant";
-import { useSelector } from "react-redux";
-import store from "../Redux/Store";
-import openai from "../utils/openai";
+import { useDispatch, useSelector } from "react-redux";
+// import store from "../Redux/Store";
+// import openai from "../utils/openai";
 import { API_OPTIONS } from "../utils/constant";
+import { addGptMovieResults } from "../Redux/gptSlice";
 
 export default function GptSearchBar() {
   const langKey = useSelector((store) => store.config.lang);
-
-  const valueref = useRef("");
+  const [userVAlue, setuserVAlue] = useState("");
+  const dispatch = useDispatch();
 
   const searchMovieTMBD = async (movieName) => {
     try {
@@ -18,14 +19,24 @@ export default function GptSearchBar() {
       );
       const jsonData = await data.json();
       console.log(jsonData);
+      if (jsonData.results.length > 0) {
+        dispatch(addGptMovieResults(jsonData.results));
+      } else {
+        dispatch(addGptMovieResults(null));
+      }
     } catch (error) {
       console.log(error.message);
     }
   };
 
   const handleSearch = async () => {
-    console.log(valueref.current.value);
-    searchMovieTMBD(valueref.current.value);
+    if (userVAlue.length <= 0) {
+      alert("please enter input");
+    } else {
+      console.log(userVAlue);
+      searchMovieTMBD(userVAlue);
+    }
+
     // const gptQuery =
     //   "Act as a Movie Recommendation system and suggest some movies for the query:" +
     //   valueref.current.value +
@@ -36,7 +47,10 @@ export default function GptSearchBar() {
     //   model: "gpt-3.5-turbo",
     // });
     // console.log(gptResult.choices);
+
+    setuserVAlue("");
   };
+
   return (
     <div className="  pt-[10%] flex justify-center ">
       <form
@@ -47,8 +61,8 @@ export default function GptSearchBar() {
           type="text"
           className=" p-4 m-4  col-span-8 "
           placeholder={lang[langKey]?.gptSearchPlaceholder}
-          ref={valueref}
-          value={valueref.current.value}
+          value={userVAlue}
+          onChange={(e) => setuserVAlue(e.target.value)}
         />
         <button
           className=" col-span-4 m-4 py-2 px-4 bg-red-700 text-white rounded-lg"
